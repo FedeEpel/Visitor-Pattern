@@ -1,2 +1,2 @@
 # Visitor-Pattern
-El patron visitor en C++
+El patron visitor en C++ y Python
