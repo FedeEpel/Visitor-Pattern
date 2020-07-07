@@ -2,104 +2,97 @@
 #include <string>
 using namespace std;
 
-class Element1;
-class Element2;
-class Element3;
-
-// 1. Create a "visitor" base class w/ a visit() method for every "element" type
-
-class Visitor
-{
-  public:
-    virtual void visit(Element1 *element) = 0;
-    virtual void visit(Element2 *element) = 0;
-    virtual void visit(Element3 *element) = 0;
-};
-// 2. Add an accept(Visitor) method to the "element" hierarchy
+// 1. Add an accept(Visitor) method to the "element" hierarchy
 class Element
 {
   public:
-    virtual void accept(Visitor &visitor) = 0;
+    virtual void accept(class Visitor &v) = 0;
 };
 
-class Element1: public Element
+class This: public Element
 {
   public:
-     
-    string element1()
+     /*virtual*/void accept(Visitor &v);
+    string thiss()
     {
-        return "Element1";
+        return "This";
     }
-
-	void accept(Visitor &visitor)
-	{
-  		visitor.visit(this);
-	}
-
 };
 
-class Element2: public Element
+class That: public Element
 {
   public:
-     
-    string element2()
+     /*virtual*/void accept(Visitor &v);
+    string that()
     {
-        return "Element2";
+        return "That";
     }
-
-    void accept(Visitor &visitor)
-	{
-  		visitor.visit(this);
-	}
-
 };
 
-class Element3: public Element
+class TheOther: public Element
 {
   public:
-     
-    string element3()
+     /*virtual*/void accept(Visitor &v);
+    string theOther()
     {
-        return "Element3";
+        return "TheOther";
     }
-
-    void accept(Visitor &visitor)
-	{
-  		visitor.visit(this);
-	}
-
 };
+
+// 2. Create a "visitor" base class w/ a visit() method for every "element" type
+class Visitor
+{
+  public:
+    virtual void visit(This *e) = 0;
+    virtual void visit(That *e) = 0;
+    virtual void visit(TheOther *e) = 0;
+};
+
+ /*virtual*/void This::accept(Visitor &v)
+{
+  v.visit(this);
+}
+
+ /*virtual*/void That::accept(Visitor &v)
+{
+  v.visit(this);
+}
+
+ /*virtual*/void TheOther::accept(Visitor &v)
+{
+  v.visit(this);
+}
 
 // 3. Create a "visitor" derived class for each "operation" to do on "elements"
 class UpVisitor: public Visitor
 {
-     void visit(Element1 *element)
+     /*virtual*/void visit(This *e)
     {
-        cout << "do Up on " + element->element1() << '\n';
+        cout << "do Up on " + e->thiss() << '\n';
     }
-     void visit(Element2 *element)
+     /*virtual*/void visit(That *e)
     {
-        cout << "do Up on " + element->element2() << '\n';
+        cout << "do Up on " + e->that() << '\n';
     }
-     void visit(Element3 *element)
+     /*virtual*/void visit(TheOther *e)
     {
-        cout << "do Up on " + element->element3() << '\n';
+        cout << "do Up on " + e->theOther() << '\n';
     }
 };
 
 class DownVisitor: public Visitor
 {
-     void visit(Element1 *element)
+     /*virtual*/void visit(This *e)
     {
-        cout << "do Down on " + element->element1() << '\n';
+        cout << "do Down on " + e->thiss() << '\n';
     }
-     void visit(Element2 *element)
+     /*virtual*/void visit(That *e)
     {
-        cout << "do Down on " + element->element2() << '\n';
+        cout << "do Down on " + e->that() << '\n';
     }
-     void visit(Element3 *element)
+     /*virtual*/void visit(TheOther *e)
     {
-        cout << "do Down on " + element->element3() << '\n';
+        cout << "do Down on " + e->theOther() << '\n';
     }
 };
 
@@ -107,7 +100,7 @@ int main()
 {
   Element *list[] = 
   {
-    new Element1(), new Element2(), new Element3()
+    new This(), new That(), new TheOther()
   };
   UpVisitor up; // 4. Client creates
   DownVisitor down; //    "visitor" objects
